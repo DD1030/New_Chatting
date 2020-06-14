@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private static final String TAG = "MainActivity";
@@ -40,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,18 +50,18 @@ public class LoginActivity extends AppCompatActivity {
                 String stPassword = etPassword.getText().toString();
 
                 if(stEmail.isEmpty()){
-                    Toast.makeText(LoginActivity.this, "Please insert Email", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Please insert Email", Toast.LENGTH_LONG).show();
                     return;
                 }
                 if(stPassword.isEmpty()) {
-                    Toast.makeText(LoginActivity.this, stEmail + "Please insert Password" + stPassword, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, stEmail + "Please insert Password" + stPassword, Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 progressBar.setVisibility(View.VISIBLE);
 
                 mAuth.signInWithEmailAndPassword(stEmail, stPassword)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressBar.setVisibility(View.GONE);
@@ -72,14 +74,15 @@ public class LoginActivity extends AppCompatActivity {
                                     String stUserName = user.getDisplayName();
                                     Log.d(TAG, "stUserEamil : " +stUserEmail + ", stUserName : " +stUserName);
 
-                                    Intent in = new Intent (LoginActivity.this, ChatActivity.class);
+                                    Intent in = new Intent (MainActivity.this, TabActivity.class);
                                     in.putExtra("email", stEmail);
                                     startActivity(in);
+                                    finish();
 
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.makeText(MainActivity.this, "Authentication failed.",
                                             Toast.LENGTH_SHORT).show();
                                 }
 
@@ -98,15 +101,16 @@ public class LoginActivity extends AppCompatActivity {
                 String stPassword = etPassword.getText().toString();
 
                 if(stEmail.isEmpty()){
-                    Toast.makeText(LoginActivity.this, "Please insert Email", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Please insert Email", Toast.LENGTH_LONG).show();
                     return;
                 }
                 if(stPassword.isEmpty()) {
-                    Toast.makeText(LoginActivity.this, stEmail + "Please insert Password" + stPassword, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, stEmail + "Please insert Password" + stPassword, Toast.LENGTH_LONG).show();
                     return;
                 }
+
                 mAuth.createUserWithEmailAndPassword(stEmail, stPassword)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressBar.setVisibility(View.GONE);
@@ -117,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.makeText(MainActivity.this, "Authentication failed.",
                                             Toast.LENGTH_SHORT).show();
                                 }
 
@@ -128,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     @Override
